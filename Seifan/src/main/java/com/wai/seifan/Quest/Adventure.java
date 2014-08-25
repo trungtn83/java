@@ -1,4 +1,4 @@
-package com.wai.seifan.seifan;
+package com.wai.seifan.Quest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -46,25 +46,48 @@ public class Adventure extends Quest implements Url {
 				
 				// TODO: Need to check win or lose
 				
-				this.println("BOSS	# found a boss and passed him (not sure about prize :) )");
+				logger.info("BOSS	# found a boss and passed him (not sure about prize :) )");
 				continue;
 			}
 			
 			// check if PATH
 			if (StringUtils.contains(homeResponse.getUri().toString(), "/not")) {
-				this.println("PATH	# found a path");
+				logger.info("PATH	# found a path");
 				String levelPath = StringUtils.split(homeResponse.getUri().toString(), "/")[3];
+				
+				// in case timeout and continue with next adventure
+				Element form = homeDocument.select("form[method=post]").first();
+				if (form != null) {
+					if (!StringUtils.contains(form.attr("action"), "/not")) {
+						// inside path and timeout
+						String[] actions = StringUtils.split(form.attr("action"), "/");
+						this.doQuest(actions[2]);
+						continue;
+					} else {
+						// have a battle with other player
+						if (this.isAttackable(form.parent().parent())) {
+							// attack enemy
+							String attackUrl = homeDocument.select("div.gradiationGray > span > a").first().attr("href");
+							this.getResponse(URL + attackUrl);
+							this.getResponse(StringUtils.replace(StringUtils.split(URL + attackUrl, "?")[0], "battle", "result"));
+							continue;
+						} else {
+							// use "diep linh phu" to runaway
+							continue;
+						}
+					}
+				} else 
 
 				if (isPath) {
 					// check path until go to the end
 					this.doPath(levelPath);
-					this.println("PATH	# enjoy the path");
+					logger.info("PATH	# enjoy the path");
 				} else {
 					// back from path
 					this.getResponse(URL_QUEST_DO + levelPath + "/conf_back");
 					this.getResponse(URL_QUEST_DO + levelPath + "/back");
-					this.getResponse(URL_QUEST_DROPLIST + levelPath + "/");
-					this.println("PATH	# hate it and go out");
+					this.getResponse(URL_QUEST_DROPLIST + levelPath + "/1");
+					logger.info("PATH	# hate it and go out");
 				}
 				continue;
 			}
@@ -81,12 +104,12 @@ public class Adventure extends Quest implements Url {
 				// try to find next quest button
 				String formAction = Jsoup.parse(notResponse.getResponseBody()).select("form").first().attr("action");
 				if (StringUtils.equals(formAction, "/quest/execute/"+level)) {
-					this.println("QUEST	# level : " + level);
+					logger.info("QUEST	# level : " + level);
 					QuestInfo questInfo = this.getQuestInfo(notResponse);
 					
 					// if does not enough mana, wait for some minutes
 					if (questInfo.getWaitTime() > 0) {
-						this.println("WAIT	# wait in " + questInfo.getWaitTime() + " minutes");
+						logger.info("WAIT	# wait in " + questInfo.getWaitTime() + " minutes");
 						Thread.sleep(questInfo.getWaitTime()*60*1000);
 						continue;
 					}
@@ -122,7 +145,7 @@ public class Adventure extends Quest implements Url {
 	@Override
 	public void doQuest(String level) throws Exception {
 		this.getResponse(URL_QUEST_DO + level);
-		this.println("QUEST	# did a quest");
+		logger.info("QUEST	# did a quest");
 	}
 
 	@Override
@@ -158,8 +181,8 @@ public class Adventure extends Quest implements Url {
 		info.setExpTotal(expTotal);
 		info.setRatioNeeded((double) (expTotal - expCurrent)/manaHave);
 
-		this.println("RATIO	# have : " + info.getRatioHad() + " ; needed : " + info.getRatioNeeded());
-		this.println("INFO 	# mana : " + manaHave + "/" + manaTotal + "; exp : " + expCurrent + "/" + expTotal);
+		logger.info("RATIO	# have : " + info.getRatioHad() + " ; needed : " + info.getRatioNeeded());
+		logger.info("INFO 	# mana : " + manaHave + "/" + manaTotal + "; exp : " + expCurrent + "/" + expTotal);
 		
 		return info;
 	}

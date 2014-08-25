@@ -1,8 +1,5 @@
 package com.wai.seifan.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Jsoup;
@@ -10,14 +7,22 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import com.ning.http.client.Response;
+import com.wai.seifan.common.Const;
 import com.wai.seifan.common.Url;
 import com.wai.seifan.dto.QuestInfo;
 
 public class Utils implements Url {
 	
+	public static String removeInvalidChars(String str) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			if (!Const.CHAR_INVALID.contains(str.charAt(i))) {
+				sb.append(str.charAt(i));
+			}
+		}
+		return sb.toString();
+	}
 	// Lay thong tin ve quest hien tai
 	public static QuestInfo getQuestInfo(Response response) throws Exception {
 		QuestInfo quest = new QuestInfo();
@@ -63,27 +68,4 @@ public class Utils implements Url {
 		
 		return quest;
 	}
-
-//	public static void doResetTowerQuest(AsyncHttpClient client, String session) throws Exception {
-//		System.out.println("BAT DAU RESET TOWER");
-//		// 1. goi den trang home cua tower quest de tim link
-//		//http://chada.seifan.shopgautho.com/event/chada2_tower_quest/index/1
-//		Response response = client.preparePost("http://chada.seifan.shopgautho.com/event/chada2_tower_quest/reset_confirm")
-//				.setMethod("GET")
-//				.setHeaders(getCookieGETHeaders(session))
-//				.execute()
-//				.get();
-//		Document document = Jsoup.parse(response.getResponseBody());
-//		if (document.select("div.gradiationGray").last() != null) {
-//			String confirmLink = "http://chada.seifan.shopgautho.com/" + document.select("div.gradiationGray").last().select("> a").first().attr("href");
-//			// 2. thuc hien reset
-//			client.preparePost(confirmLink)
-//					.setMethod("GET")
-//					.setHeaders(getCookieGETHeaders(session))
-//					.execute()
-//					.get();
-//			System.out.println("BAN VUA RESET SO TANG");
-//		}
-//	}
-	
 }

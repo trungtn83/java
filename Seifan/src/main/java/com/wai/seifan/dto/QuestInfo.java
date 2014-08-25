@@ -2,6 +2,7 @@ package com.wai.seifan.dto;
 
 public class QuestInfo {
 	private long no;
+	private long step;
 	private long reputationPoint;
 	private long completePercent;
 	private long manaCost;
@@ -13,7 +14,8 @@ public class QuestInfo {
 	private boolean isPath;
 	private double ratioNeeded;
 	private double ratioHad;
-	
+	private String type;
+
 	public double getRatioNeededNext() {
 		return (double) (manaHad - manaCost) / (expCurrent + expGain);
 	}
@@ -24,6 +26,10 @@ public class QuestInfo {
 	
 	public long getExpWithMana(long mana) {
 		return (mana/this.manaCost)*this.expGain;
+	}
+	
+	public long getExpToLevelUp() {
+		return this.expTotal - this.expCurrent;
 	}
 	
 	public long getNo() {
@@ -97,6 +103,22 @@ public class QuestInfo {
 	}
 	public void setRatioHad(double ratioHad) {
 		this.ratioHad = ratioHad;
+	}
+
+	public long getStep() {
+		return step;
+	}
+
+	public void setStep(long step) {
+		this.step = step;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

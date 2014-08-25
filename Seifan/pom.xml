@@ -39,7 +39,11 @@
 			<artifactId>async-http-client</artifactId>
 			<version>1.8.13</version>
 		</dependency>
-
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.10</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -52,6 +56,17 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-jar-plugin</artifactId>
+		        <configuration>
+		          <archive>
+		            <manifest>
+		              <addClasspath>true</addClasspath>
+		            </manifest>
+		          </archive>
+		        </configuration>
+		      </plugin>
 		</plugins>
 	</build>
 </project>

@@ -1,13 +1,23 @@
 package com.wai;
 
+import com.wai.seifan.Quest.QuestMysteryRoad;
+
 /**
  * Hello world!
  *
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws Exception
     {
-        System.out.println( "Hello World!" );
+    	String username = args[0];
+    	String password = "hatrung";
+    	
+//    	Adventure adv = new Adventure();
+//    	adv.login(username, password);
+//    	adv.execute();
+    	QuestMysteryRoad mysteryRoad = new QuestMysteryRoad();
+    	mysteryRoad.login("hit", password);
+    	mysteryRoad.execute();
     }
 }

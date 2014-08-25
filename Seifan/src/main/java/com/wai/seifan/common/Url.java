@@ -7,4 +7,6 @@ public interface Url {
 	
 	String URL_USER_HOME = URL + "/user/home";
 	String URL_USER_PARAM = URL + "/user/param";
+	
+	String URL_ITEM_VIEW = URL + "/item/view/";
 }
