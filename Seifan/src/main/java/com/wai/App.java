@@ -1,6 +1,6 @@
 package com.wai;
 
-import com.wai.seifan.Quest.QuestMysteryRoad;
+import com.wai.seifan.quest.QuestMysteryRoad;
 
 /**
  * Hello world!

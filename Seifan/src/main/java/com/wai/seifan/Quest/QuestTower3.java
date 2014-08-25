@@ -1,15 +1,15 @@
-package com.wai.seifan.Quest;
+package com.wai.seifan.quest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.ning.http.client.Response;
-import com.wai.seifan.common.Quest;
+import com.wai.seifan.common.Questable;
 import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.util.Utils;
 
-public class QuestTower3 extends Quest {
+public class QuestTower3 extends Questable {
 	private boolean isUsedMana = false;
 	private boolean isUsedManaSmall = false;
 	private boolean isUsedManaFullLocked = false;

@@ -1,4 +1,4 @@
-package com.wai.seifan.Quest;
+package com.wai.seifan.quest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -8,11 +8,11 @@ import org.jsoup.select.Elements;
 
 import com.ning.http.client.Response;
 import com.wai.seifan.common.Const;
-import com.wai.seifan.common.Quest;
+import com.wai.seifan.common.Questable;
 import com.wai.seifan.common.Url;
 import com.wai.seifan.dto.QuestInfo;
 
-public class Adventure extends Quest implements Url {
+public class Adventure extends Questable implements Url {
 	private boolean isPath = false;
 	private static final String URL_QUEST_HOME = URL + "/quest/";
 	private static final String URL_QUEST_DO = URL + "/quest/execute/";
