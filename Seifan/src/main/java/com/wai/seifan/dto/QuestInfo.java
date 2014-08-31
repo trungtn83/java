@@ -2,13 +2,18 @@ package com.wai.seifan.dto;
 
 public class QuestInfo {
 	private long no;
+	private String title;
 	private long step;
 	private long reputationPoint;
 	private long completePercent;
 	private long manaCost;
 	private long expGain;
 	private long manaHad;
-	private long manaTotal;
+	private long manaTotal;	
+	private long attackHad;
+	private long attackTotal;
+	private long defenseHad;
+	private long defenseTotal;
 	private long expCurrent;
 	private long expTotal;
 	private boolean isPath;
@@ -119,6 +124,46 @@ public class QuestInfo {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public long getAttackHad() {
+		return attackHad;
+	}
+
+	public void setAttackHad(long attackHad) {
+		this.attackHad = attackHad;
+	}
+
+	public long getAttackTotal() {
+		return attackTotal;
+	}
+
+	public void setAttackTotal(long attackTotal) {
+		this.attackTotal = attackTotal;
+	}
+
+	public long getDefenseHad() {
+		return defenseHad;
+	}
+
+	public void setDefenseHad(long defenseHad) {
+		this.defenseHad = defenseHad;
+	}
+
+	public long getDefenseTotal() {
+		return defenseTotal;
+	}
+
+	public void setDefenseTotal(long defenseTotal) {
+		this.defenseTotal = defenseTotal;
 	}
 	
 }

@@ -1,4 +1,4 @@
-package com.wai.seifan.Quest;
+package com.wai.seifan.quest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;

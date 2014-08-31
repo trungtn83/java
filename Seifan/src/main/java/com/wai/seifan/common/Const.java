@@ -1,7 +1,9 @@
 package com.wai.seifan.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface Const {
 	double[] RATIO_POTENTIAL_POINT = {0.6, 0.4, 0};
@@ -18,6 +20,25 @@ public interface Const {
         {
             add((char) 32);
             add((char) 160);
+        }
+    };
+    
+    List<String> ACCOUNT_MAIN = new ArrayList<String>(){
+        {
+            add("hit");
+            add("marry");
+        }
+    };
+    
+    Map<String, String> ACCOUNT_NAME_ID = new HashMap<String, String>(){
+        {
+            put("You're my everything!", "121");
+            put("hantt0409", "85");
+            put("you make me cry", "41");
+            put("marry", "78");
+            put("hit", "107");
+            put("wai", "48");
+            put("thanhha0409", "83");
         }
     };
     

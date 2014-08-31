@@ -1,6 +1,8 @@
 package com.wai;
 
-import com.wai.seifan.Quest.QuestMysteryRoad;
+import com.wai.seifan.quest.AcceptFriend;
+import com.wai.seifan.quest.QuestDragonTower;
+import com.wai.seifan.quest.QuestMysteryRoad;
 
 /**
  * Hello world!
@@ -16,8 +18,17 @@ public class App
 //    	Adventure adv = new Adventure();
 //    	adv.login(username, password);
 //    	adv.execute();
-    	QuestMysteryRoad mysteryRoad = new QuestMysteryRoad();
-    	mysteryRoad.login("hit", password);
-    	mysteryRoad.execute();
+    	
+//    	QuestMysteryRoad mysteryRoad = new QuestMysteryRoad(false, false, false, false);
+//    	mysteryRoad.login(username, password);
+//    	mysteryRoad.execute();
+    	
+//    	QuestDragonTower dragonTower = new QuestDragonTower(false, false, false, false);
+//    	dragonTower.login(username, password);
+//    	dragonTower.execute();
+    	
+    	AcceptFriend add = new AcceptFriend();
+    	add.login(username, password);
+    	add.execute();
     }
 }

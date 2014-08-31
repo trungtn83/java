@@ -19,6 +19,7 @@ import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.ProxyServer;
 import com.ning.http.client.Response;
 import com.wai.seifan.dto.QuestInfo;
+import com.wai.seifan.quest.RequestFriend;
 import com.wai.seifan.util.Utils;
 
 public abstract class Quest implements Url {
@@ -35,6 +36,9 @@ public abstract class Quest implements Url {
 	protected boolean isUsedManaSmall = false;
 	protected boolean isUsedManaFullLocked = false;
 	protected boolean isUsedManaFullOpened = false;
+	
+	protected String username;
+	protected String password;
 
 	public Quest() {
 		try {
@@ -98,8 +102,10 @@ public abstract class Quest implements Url {
 			.setParameters(params)
 			.execute()
 			.get();
-//		System.out.println(homeResponse.getResponseBody());
 		String homeURI = homeResponse.getUri().toString();
+		
+		this.username = username;
+		this.password = password;
 		
 		// Check if login is successful or not
 		if (StringUtils.contains(homeURI, "user/home/login_bonus_redirect")) {
@@ -111,7 +117,14 @@ public abstract class Quest implements Url {
 		return false;
 	}
 	
+	protected void autoAddMana() throws Exception {
+		RequestFriend friend = new RequestFriend();;
+		friend.login(username, password);
+		friend.execute();
+	}
+	
 	public Response getResponse(String url) throws Exception {
+		Thread.sleep(2000);
 		return _client
 				.preparePost(url)
 				.setMethod("GET")
@@ -121,6 +134,7 @@ public abstract class Quest implements Url {
 	}
 	
 	public Response getResponse(String url, String body) throws Exception {
+		Thread.sleep(2000);
 		return _client
 				.preparePost(url)
 				.setMethod("POST")
@@ -144,6 +158,8 @@ public abstract class Quest implements Url {
 	}
 	
 	public void usePotentialPoint(double _mana, double _attack, double _defense) throws Exception {
+		logger.info("=======================================");
+		
 		String ID_MANA = "energy_max";
 		String ID_ATTACK = "attack_energy_max";
 		String ID_DEFENSE = "difense_energy_max";
@@ -169,7 +185,6 @@ public abstract class Quest implements Url {
 		this.getResponse(upLinkAttack, "data%5B"+ID_ATTACK+"%5D="+ attackPoint);
 		// 3. cong diem tinh luc phong thu
 		
-		logger.info("=======================================");
 		logger.info("USED POTENTIAL POINT " + manaPoint + "(mana);" + attackPoint + "(attack);" + defensePoint + "(defense)");
 	}
 	

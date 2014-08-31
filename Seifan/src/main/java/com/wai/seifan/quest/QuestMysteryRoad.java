@@ -1,4 +1,4 @@
-package com.wai.seifan.Quest;
+package com.wai.seifan.quest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -34,7 +34,7 @@ public class QuestMysteryRoad extends Quest implements Url{
 	@Override
 	public void execute() throws Exception {
 		while (true) {
-			this.usePotentialPoint(-1, -1, 0);
+			this.usePotentialPoint(1, 0, 0);
 			
 			// send request to home of adventure quest
 			Response homeResponse = this.getResponse(URL_QUEST_HOME);
@@ -49,15 +49,25 @@ public class QuestMysteryRoad extends Quest implements Url{
 			
 			// if this is new level, enter it
 			if (!StringUtils.contains(homeResponse.getUri().toString(), "/not")) {
-				logger.info("Finish a level, go to the next one");
+				// check if have a battle with other player
+				Element battleElement = homeDocument.select("a[href^=/swf_touch/201404202060/encount_battle/cdmq]").first();
+				if (battleElement != null) {
+					this.getResponse("http://chada.seifan.shopgautho.com/swf_touch/201404202060/encount_battle/cdmq");
+					this.getResponse("http://chada.seifan.shopgautho.com/event/chada_mysteryroad_quest/encount_result/cdmq");
+					logger.info("Have a battle with other player");
+					continue;
+				}
 				
 				// If can find link to go fast, do it
 				if (homeDocument.select("a[href^=/event/chada_mysteryroad_quest/execute/difficulty1").first() != null) {
 					this.getResponse(URL + "/event/chada_mysteryroad_quest/execute/difficulty1");
+					logger.info("Change to fast");
+					continue;
 				}
 				
 				this.doQuest(null);
 				this.getResponse(URL_QUEST_DO+"get");
+				logger.info("Do a quest and go to other level");
 				continue;
 			} else {
 				if (homeDocument.select("form").first() != null) {
@@ -70,11 +80,10 @@ public class QuestMysteryRoad extends Quest implements Url{
 					// temporary break at level 11, 21, 31, ....
 					if (questInfo.getNo() % 11 == 0) {
 						logger.info("NEED TO SWITCH TO FAST MANUALLY.");
-						break;
+//						break;
 					}
 					// if does not enough mana, wait for some minutes
 					if (questInfo.getWaitTime() > 0) {
-						
 						if (isUsedManaFullOpened || isUsedManaFullLocked) {
 							if (questInfo.getExpWithMana(questInfo.getManaTotal()) <= questInfo.getExpToLevelUp()) {
 								if (isUsedManaFullLocked) {
@@ -92,8 +101,9 @@ public class QuestMysteryRoad extends Quest implements Url{
 							}
 						}
 						
-						logger.info("WAIT	# wait in " + questInfo.getWaitTime() + " minutes");
-						Thread.sleep(questInfo.getWaitTime()*60*1000);
+						this.autoAddMana();
+//						logger.info("WAIT	# wait in " + questInfo.getWaitTime() + " minutes");
+//						Thread.sleep(questInfo.getWaitTime()*60*1000);
 						continue;
 					}
 					

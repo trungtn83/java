@@ -1,4 +1,4 @@
-package com.wai.seifan.Quest;
+package com.wai.seifan.quest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -9,41 +9,30 @@ import com.wai.seifan.common.Quest;
 import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.util.Utils;
 
-public class QuestTower3 extends Quest {
+public class QuestTower2 extends Quest {
 	private boolean isUsedMana = false;
 	private boolean isUsedManaSmall = false;
 	private boolean isUsedManaFullLocked = false;
 	private boolean isUsedManaFullOpened = false;
 	
-//	public static void main(String[] args) throws Exception {
-//		QuestTower3 tower = new QuestTower3();
-//		if (tower.login("hit", "hatrung")) {
-//			tower.execute();
-//		}
-//	}
-	
-	public QuestTower3() {}
-	
-	public QuestTower3(boolean _isUsedMana, boolean _isUsedManaSmall, boolean _isUsedManaFullLocked, boolean _isUsedManaFullOpened) {
-		this.isUsedMana = _isUsedMana;
-		this.isUsedManaSmall = _isUsedManaSmall;
-		this.isUsedManaFullLocked = _isUsedManaFullLocked;
-		this.isUsedManaFullOpened = _isUsedManaFullOpened;
+	public static void main(String[] args) throws Exception {
+		QuestTower2 tower = new QuestTower2();
+		if (tower.login("hit", "hatrung")) {
+			tower.execute();
+		}
 	}
 
 	@Override
 	public void execute() throws Exception {
 		while (true) {
-			if (!isRunable) {
-				break;
-			}
 			
 			// Diem tiem nang // this.getResponse("");
 			Long potentialPoint = this.getPotentialPoint();
 			logger.info("Hien tai dang co " + potentialPoint + "diem tiem nang.");
 			
 			Response towerShowInfoResponse = this.getResponse("http://chada.seifan.shopgautho.com/event/chada3_tower_quest/execute/not");
-			String towerShowInfoLastURI = towerShowInfoResponse.getUri().toString();
+			String 
+			towerShowInfoLastURI = towerShowInfoResponse.getUri().toString();
 			// kiem tra truong hop roi the
 			if (StringUtils.contains(towerShowInfoLastURI, "drop")) {
 				// 1. goi den link nhan the
@@ -56,13 +45,13 @@ public class QuestTower3 extends Quest {
 			if (towerQuest.getCompletePercent() == 100L) {
 				// 1. goi den url de qua tang = cach  goi den index
 				this.getResponse("http://chada.seifan.shopgautho.com/event/chada3_tower_quest/index");
-//				Utils.logger.info(Jsoup.parse(r.getResponseBody()));
+//				Utils.println(Jsoup.parse(r.getResponseBody()));
 				// 2. check neu tang chia het cho 10 thi danh boss
 				if (towerQuest.getNo() % 10 == 0) {
 					// 1. vao trang danh boss = boss http://chada.seifan.shopgautho.com/event/chada3_tower_quest/boss
 					Response bossResponse = this.getResponse("http://chada.seifan.shopgautho.com/event/chada3_tower_quest/boss");
 					Document bossDocument = Jsoup.parse(bossResponse.getResponseBody());
-//					Utils.logger.info(bossDocument);
+//					Utils.println(bossDocument);
 					if (bossDocument.select("div.gradiationGray > span > a").first() == null) {
 						// bang cach nao do da danh boss xong, chuyen sang lam quest tiep theo
 						continue;
@@ -131,18 +120,18 @@ public class QuestTower3 extends Quest {
 								this.doQuest(null);
 							} else { // 2. Neu het tinh luc small
 								//   2.1 Hien thi thong bao la het ngoc tinh luc
-//								Utils.logger.info("HET TAT CA MOI THU DE PHUC HOI MANA !!!!!!");
+//								Utils.println("HET TAT CA MOI THU DE PHUC HOI MANA !!!!!!");
 								//   2.2 Doi bao nhieu phut de hoi phuc mana va chay tiep
 								Long waitTime = (towerQuest.getManaCost() - towerQuest.getManaHad())*2;
 								logger.info("HET NGOC : DOI " + waitTime + " PHUT DE HOI PHUC MANA !!!");
-								Thread.sleep(waitTime*60*1000);
+//								Thread.sleep(waitTime*60*1000);
 							}
 						} else {
 							// an linh luc thua diem de len level
-//							Utils.logger.info("NEU AN TINH LUC SE THUA DIEM DE LEN LEVEL");
+//							Utils.println("NEU AN TINH LUC SE THUA DIEM DE LEN LEVEL");
 							Long waitTime = (towerQuest.getManaCost() - towerQuest.getManaHad())*2;
 							logger.info("AN TINH LUC THI THUA EXP : DOI " + waitTime + " PHUT DE HOI PHUC MANA !!!");
-							Thread.sleep(waitTime*60*1000);
+//							Thread.sleep(waitTime*60*1000);
 						}
 					}
 					
@@ -182,7 +171,7 @@ public class QuestTower3 extends Quest {
 		}
 		String useLink = "http://chada.seifan.shopgautho.com/" + document.select("form").first().attr("action");
 		this.getResponse(useLink, "data%5Bitem_id%5D="+itemId+"&data%5Buse_quantity%5D=1");
-		logger.info("BAN VUA AN TINH LUC FULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL !!!");
+		System.out.println("BAN VUA AN TINH LUC FULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL !!!");
 		return true;
 	}
 	
@@ -195,14 +184,13 @@ public class QuestTower3 extends Quest {
 		}
 		String useLink = "http://chada.seifan.shopgautho.com/" + document.select("form").first().attr("action");
 		response = this.getResponse(useLink, "data%5Bitem_id%5D=100&data%5Buse_quantity%5D=1");
-		logger.info("BAN VUA AN TINH LUC NHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO !!!");
+		System.out.println("BAN VUA AN TINH LUC NHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO !!!");
 		return true;
 	}
 	
 	@Override
 	public void doQuest(String level) throws Exception {
 		this.getResponse("http://chada.seifan.shopgautho.com/event/chada3_tower_quest/execute");
-		Thread.sleep(2000);
 	}
 
 	@Override
