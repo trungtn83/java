@@ -1,7 +1,10 @@
 package com.wai;
 
+<<<<<<< HEAD
 import com.wai.seifan.quest.AcceptFriend;
 import com.wai.seifan.quest.QuestDragonTower;
+=======
+>>>>>>> 4db9abfdaed85bee8c8e767fce22b70e00cefc41
 import com.wai.seifan.quest.QuestMysteryRoad;
 
 /**

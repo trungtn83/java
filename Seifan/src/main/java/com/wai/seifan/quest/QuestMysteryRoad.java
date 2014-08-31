@@ -8,12 +8,12 @@ import org.jsoup.select.Elements;
 
 import com.ning.http.client.Response;
 import com.wai.seifan.common.Const;
-import com.wai.seifan.common.Quest;
+import com.wai.seifan.common.Questable;
 import com.wai.seifan.common.Url;
 import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.util.Utils;
 
-public class QuestMysteryRoad extends Quest implements Url{
+public class QuestMysteryRoad extends Questable implements Url {
 	private static final String URL_QUEST_HOME = URL + "/event/chada_mysteryroad_quest/execute/not";
 	private static final String URL_QUEST_DO = URL + "/event/chada_mysteryroad_quest/execute/";
 	

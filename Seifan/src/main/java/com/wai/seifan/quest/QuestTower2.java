@@ -5,11 +5,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.ning.http.client.Response;
-import com.wai.seifan.common.Quest;
+import com.wai.seifan.common.Questable;
 import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.util.Utils;
 
-public class QuestTower2 extends Quest {
+public class QuestTower2 extends Questable {
 	private boolean isUsedMana = false;
 	private boolean isUsedManaSmall = false;
 	private boolean isUsedManaFullLocked = false;
