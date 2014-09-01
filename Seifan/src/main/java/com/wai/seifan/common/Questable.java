@@ -22,7 +22,7 @@ import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.quest.RequestFriend;
 import com.wai.seifan.util.Utils;
 
-public abstract class Quest implements Url {
+public abstract class Questable implements Url {
 	protected Logger logger;
 	protected PropertiesConfiguration config;
 
@@ -40,7 +40,7 @@ public abstract class Quest implements Url {
 	protected String username;
 	protected String password;
 
-	public Quest() {
+	public Questable() {
 		try {
 			config = new PropertiesConfiguration("system.properties");
 		} catch (ConfigurationException e) {
@@ -56,7 +56,7 @@ public abstract class Quest implements Url {
 		_client = new AsyncHttpClient(builder.setExecutorService(
 			Executors.newCachedThreadPool(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("seifan-async-http-client-%s").build())).build());
 		
-		logger = Logger.getLogger(Quest.class);
+		logger = Logger.getLogger(Questable.class);
 
 	}
 

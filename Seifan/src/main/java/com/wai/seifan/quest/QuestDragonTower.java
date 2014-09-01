@@ -8,12 +8,12 @@ import org.jsoup.select.Elements;
 
 import com.ning.http.client.Response;
 import com.wai.seifan.common.Const;
-import com.wai.seifan.common.Quest;
+import com.wai.seifan.common.Questable;
 import com.wai.seifan.common.Url;
 import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.util.Utils;
 
-public class QuestDragonTower extends Quest implements Url{
+public class QuestDragonTower extends Questable implements Url{
 	private static final String URL_QUEST_DO = URL + "/event/chada_raid_quest/execute";
 	private static final String URL_QUEST_DO_NOT = URL_QUEST_DO + "/not";
 	private static final String URL_QUEST_DO_INDEX =  URL + "/event/chada_raid_quest/index";
@@ -51,12 +51,21 @@ public class QuestDragonTower extends Quest implements Url{
 				Element bigBossElement = bossDiv.select("> div > div.gradiationGray > a").first();
 				if (bigBossElement != null) {
 					Response bossDetailResponse = this.getResponse(URL + bigBossElement.attr("href"));
-					Element doBossElement = Jsoup.parse(bossDetailResponse.getResponseBody()).getElementById("raidBoss").select("> div.gradiationGray > span > a").first();
-					if (doBossElement != null) {
-						this.getResponse("http://chada.seifan.shopgautho.com/swf_touch/201404202060/raid_boss_battle/");
-						this.getResponse("http://chada.seifan.shopgautho.com/raid_boss/battle_result/");
-						logger.info("DO A BIG BOSS");
-						continue;
+					if (Jsoup.parse(bossDetailResponse.getResponseBody()).getElementById("raidBoss") != null) {
+						Element doBossElement = Jsoup.parse(bossDetailResponse.getResponseBody()).getElementById("raidBoss").select("> div.gradiationGray > span > a").first();
+						if (doBossElement != null) {
+							this.getResponse("http://chada.seifan.shopgautho.com/swf_touch/201404202060/raid_boss_battle/");
+							Response bossResultResponse = this.getResponse("http://chada.seifan.shopgautho.com/raid_boss/battle_result/");
+							Element otherHelpElement = Jsoup.parse(bossResultResponse.getResponseBody()).select("a[href^=/raid_boss/other_called/cdrq]").first();
+							if (otherHelpElement != null) {
+								// loser
+								String otherHelpUrl = URL + otherHelpElement.attr("href");
+								this.getResponse(otherHelpUrl);
+								logger.info("SEND REQUEST TO ALL OTHER PEOPLE TO FINISH BOSS");
+							}
+							logger.info("DO A BIG BOSS");
+							continue;
+						}
 					}
 				}
 			}
@@ -70,7 +79,7 @@ public class QuestDragonTower extends Quest implements Url{
 					for (Element userElement : userElements) {
 						String username = userElement.text();
 						if (Const.ACCOUNT_MAIN.contains(username)) {
-							Response bossDetailResponse = this.getResponse(URL + userElement.parent().select("> div > a").first().attr("href"));
+							Response bossDetailResponse = this.getResponse(URL + userElement.parent().parent().select("> div > a").first().attr("href"));
 							Element doBossElement = Jsoup.parse(bossDetailResponse.getResponseBody()).getElementById("raidBoss").select("> div.gradiationGray > span > a").first();
 							if (doBossElement != null) {
 								this.getResponse("http://chada.seifan.shopgautho.com/swf_touch/201404202060/raid_boss_battle/");

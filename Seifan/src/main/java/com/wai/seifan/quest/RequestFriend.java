@@ -5,11 +5,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import com.ning.http.client.Response;
-import com.wai.seifan.common.Quest;
+import com.wai.seifan.common.Questable;
 import com.wai.seifan.common.Url;
 import com.wai.seifan.dto.QuestInfo;
 
-public class RequestFriend extends Quest implements Url {
+public class RequestFriend extends Questable implements Url {
 	
 	public RequestFriend() {
 	}
