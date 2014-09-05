@@ -19,6 +19,8 @@ import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.ProxyServer;
 import com.ning.http.client.Response;
 import com.wai.seifan.dto.QuestInfo;
+import com.wai.seifan.dto.UserInfo;
+import com.wai.seifan.quest.AcceptFriend;
 import com.wai.seifan.quest.RequestFriend;
 import com.wai.seifan.util.Utils;
 
@@ -37,8 +39,7 @@ public abstract class Questable implements Url {
 	protected boolean isUsedManaFullLocked = false;
 	protected boolean isUsedManaFullOpened = false;
 	
-	protected String username;
-	protected String password;
+	protected UserInfo user;
 
 	public Questable() {
 		try {
@@ -76,7 +77,9 @@ public abstract class Questable implements Url {
 		return false;
 	}
 	
-	public boolean login(String username, String password) throws Exception {
+	public boolean login(UserInfo userLogin) throws Exception {
+		this.user = userLogin;
+		
 		// Call to login page to get cookie value
 		Response firstTimeResponse = _client
 				.prepareGet(URL_LOGIN)
@@ -91,8 +94,8 @@ public abstract class Questable implements Url {
 		// Do the action login
 		FluentStringsMap params = new FluentStringsMap();
 		params.add("CID", cid);
-		params.add("data[email]", username);
-		params.add("data[pass]", password);
+		params.add("data[email]", user.getUsername());
+		params.add("data[pass]", user.getPassword());
 		params.add("submit", submit);
 		
 		Response homeResponse = _client
@@ -104,12 +107,9 @@ public abstract class Questable implements Url {
 			.get();
 		String homeURI = homeResponse.getUri().toString();
 		
-		this.username = username;
-		this.password = password;
-		
 		// Check if login is successful or not
-		if (StringUtils.contains(homeURI, "user/home/login_bonus_redirect")) {
-			logger.info("HI " + username + ", WELCOME TO SEIFAN WORLD");
+		if (StringUtils.contains(homeURI, "/user/home")) {
+			logger.info("HI " + user.getUsername() + ", WELCOME TO SEIFAN WORLD");
 			return true;
 		}
 		
@@ -118,13 +118,44 @@ public abstract class Questable implements Url {
 	}
 	
 	protected void autoAddMana() throws Exception {
-		RequestFriend friend = new RequestFriend();;
-		friend.login(username, password);
-		friend.execute();
+		for (UserInfo friend : Const.FRIENDS) {
+			Response userDetailResponse = this.getResponse("http://chada.seifan.shopgautho.com/user/details/" + friend.getId());
+			Element deleteElement = Jsoup.parse(userDetailResponse.getResponseBody()).select("a[href^=/friend/delete/]").first();
+			if (deleteElement != null) {
+				String deleteUrl = URL + deleteElement.attr("href");
+				Document confirmDocument = Jsoup.parse(this.getResponse(deleteUrl).getResponseBody());
+				
+				String confirmUrl = URL + confirmDocument.select("form").first().attr("action");
+				String confirm = confirmDocument.getElementById("conform").val();
+				String CID = confirmDocument.getElementById("CID").val();
+				this.getResponse(confirmUrl, "data%5Bconform%5D="+confirm+"&CID="+CID);
+				
+				logger.info("Removed " + friend.getUsername() + " from your friend list");
+			}
+			
+			userDetailResponse = this.getResponse("http://chada.seifan.shopgautho.com/user/details/" + friend.getId());
+			Element addElement = Jsoup.parse(userDetailResponse.getResponseBody()).select("form[action^=/friend/find_user_level]").first();
+			if (addElement != null) {
+				String addUrl = URL + addElement.attr("action");
+				String appli = addElement.getElementById("appli").val();
+				this.getResponse(addUrl, "data%5Bappli%5D="+appli);
+				
+				logger.info("Added " + friend.getUsername() + " in your friend list");
+			}
+		}
+		
+		for (UserInfo friend : Const.FRIENDS) {
+			// login to user to accept request
+			new AcceptFriend(friend);
+			
+			// wail 2 second to update on server
+			logger.info("Wait 2s to update on server");
+		}
+		
+		System.out.println("DONE");
 	}
 	
 	public Response getResponse(String url) throws Exception {
-		Thread.sleep(2000);
 		return _client
 				.preparePost(url)
 				.setMethod("GET")
@@ -134,7 +165,6 @@ public abstract class Questable implements Url {
 	}
 	
 	public Response getResponse(String url, String body) throws Exception {
-		Thread.sleep(2000);
 		return _client
 				.preparePost(url)
 				.setMethod("POST")
@@ -180,9 +210,9 @@ public abstract class Questable implements Url {
 		String upLinkDefense = "http://chada.seifan.shopgautho.com/" + doc.getElementById(ID_DEFENSE).parent().attr("action");
 
 		// 1. cong diem linh luc
-		this.getResponse(upLinkMana, "data%5B"+ID_MANA+"%5D="+ manaPoint);
+		if (manaPoint > 0) this.getResponse(upLinkMana, "data%5B"+ID_MANA+"%5D="+ manaPoint);
 		// 2. cong diem tinh luc tan cong
-		this.getResponse(upLinkAttack, "data%5B"+ID_ATTACK+"%5D="+ attackPoint);
+		if (attackPoint > 0) this.getResponse(upLinkAttack, "data%5B"+ID_ATTACK+"%5D="+ attackPoint);
 		// 3. cong diem tinh luc phong thu
 		
 		logger.info("USED POTENTIAL POINT " + manaPoint + "(mana);" + attackPoint + "(attack);" + defensePoint + "(defense)");
@@ -249,5 +279,9 @@ public abstract class Questable implements Url {
 
 	protected void setRunable(boolean isRunable) {
 		this.isRunable = isRunable;
+	}
+	
+	public void release() {
+		_client.close();
 	}
 }

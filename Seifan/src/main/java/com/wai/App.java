@@ -1,5 +1,6 @@
 package com.wai;
 
+import com.wai.seifan.dto.UserInfo;
 import com.wai.seifan.quest.AcceptFriend;
 import com.wai.seifan.quest.QuestDragonTower;
 import com.wai.seifan.quest.QuestMysteryRoad;
@@ -10,7 +11,7 @@ import com.wai.seifan.quest.QuestMysteryRoad;
  */
 public class App 
 {
-    public static void main( String[] args ) throws Exception
+    public static void main(String[] args ) throws Exception
     {
     	String username = args[0];
     	String password = "hatrung";
@@ -24,11 +25,15 @@ public class App
 //    	mysteryRoad.execute();
     	
     	QuestDragonTower dragonTower = new QuestDragonTower(false, false, false, false);
-    	dragonTower.login(username, password);
-    	dragonTower.execute();
+    	if (dragonTower.login(new UserInfo(null, username, password))) {
+    		dragonTower.execute();
+    	}
+    	dragonTower.release();
+    		
     	
 //    	AcceptFriend add = new AcceptFriend();
 //    	add.login(username, password);
 //    	add.execute();
+    	System.out.println("END");
     }
 }

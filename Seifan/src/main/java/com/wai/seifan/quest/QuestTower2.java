@@ -15,12 +15,12 @@ public class QuestTower2 extends Questable {
 	private boolean isUsedManaFullLocked = false;
 	private boolean isUsedManaFullOpened = false;
 	
-	public static void main(String[] args) throws Exception {
-		QuestTower2 tower = new QuestTower2();
-		if (tower.login("hit", "hatrung")) {
-			tower.execute();
-		}
-	}
+//	public static void main(String[] args) throws Exception {
+//		QuestTower2 tower = new QuestTower2();
+//		if (tower.login("hit", "hatrung")) {
+//			tower.execute();
+//		}
+//	}
 
 	@Override
 	public void execute() throws Exception {

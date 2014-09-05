@@ -48,11 +48,11 @@ public class QuestDragonTower extends Questable implements Url{
 			
 			// attack big boss
 			if (isDoBigBoss) {
-				Element bigBossElement = bossDiv.select("> div > div.gradiationGray > a").first();
+				Element bigBossElement = bossDiv.select("a[href^=/raid_boss/detail/]").first();
 				if (bigBossElement != null) {
 					Response bossDetailResponse = this.getResponse(URL + bigBossElement.attr("href"));
 					if (Jsoup.parse(bossDetailResponse.getResponseBody()).getElementById("raidBoss") != null) {
-						Element doBossElement = Jsoup.parse(bossDetailResponse.getResponseBody()).getElementById("raidBoss").select("> div.gradiationGray > span > a").first();
+						Element doBossElement = Jsoup.parse(bossDetailResponse.getResponseBody()).getElementById("raidBoss").select("> div.gradiationGray > span > a[href^=/swf_touch/201404202060/raid_boss_battle]").first();
 						if (doBossElement != null) {
 							this.getResponse("http://chada.seifan.shopgautho.com/swf_touch/201404202060/raid_boss_battle/");
 							Response bossResultResponse = this.getResponse("http://chada.seifan.shopgautho.com/raid_boss/battle_result/");
@@ -72,7 +72,7 @@ public class QuestDragonTower extends Questable implements Url{
 			
 			// find someone need help
 			if (isHelp) {
-				Element someoneNeedHelpElement = bossDiv.select("> div > div.gradiationGray > a").last();
+				Element someoneNeedHelpElement = bossDiv.select("a[href^=/raid_boss/other/cdrq]").first();
 				if (someoneNeedHelpElement != null) {
 					Response needHelpResponse = this.getResponse(URL + "/raid_boss/other/cdrq");
 					Elements userElements = Jsoup.parse(needHelpResponse.getResponseBody()).select("a[href^=/user/details/] > span");
