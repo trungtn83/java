@@ -2,18 +2,15 @@ package com.wai.seifan.quest;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import com.ning.http.client.Response;
-import com.wai.seifan.common.Const;
 import com.wai.seifan.common.Questable;
 import com.wai.seifan.common.Url;
 import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.dto.UserInfo;
 
 public class AcceptFriend extends Questable implements Url{
-	private static final String URL_FRIEND = URL + "/friend";
-	private static final String URL_FRIEND_APPLY = URL_FRIEND + "/appli";
+	private static final String URL_FRIEND = URL + "/friend/";
 	
 	public AcceptFriend(UserInfo userLogin) throws Exception {
 		this.login(userLogin);
@@ -25,7 +22,7 @@ public class AcceptFriend extends Questable implements Url{
 		logger.info("SCANNING TO ACCEPT NEW FRIEND");
 		
 		while (true) {
-			Response r = this.getResponse("http://chada.seifan.shopgautho.com/friend/");
+			Response r = this.getResponse(URL_FRIEND);
 			Element addElement = Jsoup.parse(r.getResponseBody()).select("a[href^=/friend/appli?ah]").first();
 			if (addElement != null) {
 				String urlFriend = addElement.attr("href");

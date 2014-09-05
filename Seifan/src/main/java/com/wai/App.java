@@ -1,9 +1,7 @@
 package com.wai;
 
 import com.wai.seifan.dto.UserInfo;
-import com.wai.seifan.quest.AcceptFriend;
 import com.wai.seifan.quest.QuestDragonTower;
-import com.wai.seifan.quest.QuestMysteryRoad;
 
 /**
  * Hello world!
@@ -25,7 +23,7 @@ public class App
 //    	mysteryRoad.execute();
     	
     	QuestDragonTower dragonTower = new QuestDragonTower(false, false, false, false);
-    	if (dragonTower.login(new UserInfo(null, username, password))) {
+    	if (dragonTower.login(new UserInfo(username, password))) {
     		dragonTower.execute();
     	}
     	dragonTower.release();

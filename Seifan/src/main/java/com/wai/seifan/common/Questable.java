@@ -21,7 +21,6 @@ import com.ning.http.client.Response;
 import com.wai.seifan.dto.QuestInfo;
 import com.wai.seifan.dto.UserInfo;
 import com.wai.seifan.quest.AcceptFriend;
-import com.wai.seifan.quest.RequestFriend;
 import com.wai.seifan.util.Utils;
 
 public abstract class Questable implements Url {
@@ -119,7 +118,8 @@ public abstract class Questable implements Url {
 	
 	protected void autoAddMana() throws Exception {
 		for (UserInfo friend : Const.FRIENDS) {
-			Response userDetailResponse = this.getResponse("http://chada.seifan.shopgautho.com/user/details/" + friend.getId());
+			if (StringUtils.equals(this.user.getUsername(), friend.getUsername()) || StringUtils.equals(this.user.getId(), friend.getId())) continue;
+			Response userDetailResponse = this.getResponse(URL_USER_DETAIL + friend.getId());
 			Element deleteElement = Jsoup.parse(userDetailResponse.getResponseBody()).select("a[href^=/friend/delete/]").first();
 			if (deleteElement != null) {
 				String deleteUrl = URL + deleteElement.attr("href");
@@ -133,7 +133,7 @@ public abstract class Questable implements Url {
 				logger.info("Removed " + friend.getUsername() + " from your friend list");
 			}
 			
-			userDetailResponse = this.getResponse("http://chada.seifan.shopgautho.com/user/details/" + friend.getId());
+			userDetailResponse = this.getResponse(URL_USER_DETAIL + friend.getId());
 			Element addElement = Jsoup.parse(userDetailResponse.getResponseBody()).select("form[action^=/friend/find_user_level]").first();
 			if (addElement != null) {
 				String addUrl = URL + addElement.attr("action");
@@ -188,8 +188,6 @@ public abstract class Questable implements Url {
 	}
 	
 	public void usePotentialPoint(double _mana, double _attack, double _defense) throws Exception {
-		logger.info("=======================================");
-		
 		String ID_MANA = "energy_max";
 		String ID_ATTACK = "attack_energy_max";
 		String ID_DEFENSE = "difense_energy_max";
@@ -198,23 +196,25 @@ public abstract class Questable implements Url {
 		
 		if (totalPotentialPoint == 0L) return;
 		
-		long manaPoint = (long) (((_mana > 0) ? _mana : Const.RATIO_POTENTIAL_POINT[0])*totalPotentialPoint);
-		long attackPoint = (long) (((_attack > 0) ? _attack : Const.RATIO_POTENTIAL_POINT[1])*totalPotentialPoint);
-		long defensePoint = (long) (((_defense > 0) ? _defense : Const.RATIO_POTENTIAL_POINT[2])*totalPotentialPoint);
+		long manaPoint = (long) (((_mana >= 0) ? _mana : Const.RATIO_POTENTIAL_POINT[0])*totalPotentialPoint);
+		long attackPoint = (long) (((_attack >= 0) ? _attack : Const.RATIO_POTENTIAL_POINT[1])*totalPotentialPoint);
+		long defensePoint = (long) (((_defense >= 0) ? _defense : Const.RATIO_POTENTIAL_POINT[2])*totalPotentialPoint);
 
 		
 		Response userParamReponse = this.getResponse("http://chada.seifan.shopgautho.com/user/param");
 		Document doc = Jsoup.parse(userParamReponse.getResponseBody());
-		String upLinkMana = "http://chada.seifan.shopgautho.com/" + doc.getElementById(ID_MANA).parent().attr("action");
-		String upLinkAttack = "http://chada.seifan.shopgautho.com/" + doc.getElementById(ID_ATTACK).parent().attr("action");
-		String upLinkDefense = "http://chada.seifan.shopgautho.com/" + doc.getElementById(ID_DEFENSE).parent().attr("action");
+		String upLinkMana = URL + doc.getElementById(ID_MANA).parent().attr("action");
+		String upLinkAttack = URL + doc.getElementById(ID_ATTACK).parent().attr("action");
+		String upLinkDefense = URL + doc.getElementById(ID_DEFENSE).parent().attr("action");
 
 		// 1. cong diem linh luc
 		if (manaPoint > 0) this.getResponse(upLinkMana, "data%5B"+ID_MANA+"%5D="+ manaPoint);
 		// 2. cong diem tinh luc tan cong
 		if (attackPoint > 0) this.getResponse(upLinkAttack, "data%5B"+ID_ATTACK+"%5D="+ attackPoint);
 		// 3. cong diem tinh luc phong thu
+		if (defensePoint > 0) this.getResponse(upLinkDefense, "data%5B"+ID_ATTACK+"%5D="+ defensePoint);
 		
+		logger.info("===========================================================");
 		logger.info("USED POTENTIAL POINT " + manaPoint + "(mana);" + attackPoint + "(attack);" + defensePoint + "(defense)");
 	}
 	
