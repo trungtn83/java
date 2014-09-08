@@ -47,7 +47,7 @@ public abstract class Questable implements Url {
 			e.printStackTrace();
 		}
 		
-		AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder().setFollowRedirects(true);
+		AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder().setFollowRedirect(true);
 		if (config.getBoolean("proxy")) {
 			ProxyServer proxyServer = new ProxyServer(config.getString("proxy.ip"), config.getInt("proxy.port"));
 			builder.setProxyServer(proxyServer);
@@ -91,21 +91,21 @@ public abstract class Questable implements Url {
 		_cookie = StringUtils.split(firstTimeResponse.getHeader("Set-Cookie"), ";")[0];
 
 		// Do the action login
-		FluentStringsMap params = new FluentStringsMap();
-		params.add("CID", cid);
-		params.add("data[email]", user.getUsername());
-		params.add("data[pass]", user.getPassword());
-		params.add("submit", submit);
+//		FluentStringsMap params = new FluentStringsMap();
+//		params.add("CID", cid);
+//		params.add("data[email]", user.getUsername());
+//		params.add("data[pass]", user.getPassword());
+//		params.add("submit", submit);
 		
 		Response homeResponse = _client
 			.preparePost(URL_LOGIN)
 			.setMethod("POST")
 			.setHeaders(this.getCookiePOSTHeaders(_cookie))
-			.setParameters(params)
+			.setBody("data%5Bemail%5D="+user.getUsername()+"&data%5Bpass%5D="+user.getPassword()+"&submit="+submit+"&CID="+cid)
 			.execute()
 			.get();
 		String homeURI = homeResponse.getUri().toString();
-		
+//		
 		// Check if login is successful or not
 		if (StringUtils.contains(homeURI, "/user/home")) {
 			logger.info("HI " + user.getUsername() + ", WELCOME TO SEIFAN WORLD");
@@ -113,7 +113,7 @@ public abstract class Questable implements Url {
 		}
 		
 		logger.info("PLEASE CHECK YOUR USERNAME OR PASSWORD");
-		return false;
+		return true;
 	}
 	
 	protected void autoAddMana() throws Exception {
@@ -125,6 +125,7 @@ public abstract class Questable implements Url {
 				String deleteUrl = URL + deleteElement.attr("href");
 				Document confirmDocument = Jsoup.parse(this.getResponse(deleteUrl).getResponseBody());
 				
+				if (confirmDocument.select("form").first() == null) continue;
 				String confirmUrl = URL + confirmDocument.select("form").first().attr("action");
 				String confirm = confirmDocument.getElementById("conform").val();
 				String CID = confirmDocument.getElementById("CID").val();
