@@ -2,6 +2,7 @@ package com.wai;
 
 import com.wai.seifan.dto.UserInfo;
 import com.wai.seifan.quest.QuestDragonTower;
+import com.wai.seifan.quest.QuestDragonTower2;
 
 /**
  * Hello world!
@@ -11,7 +12,7 @@ public class App
 {
     public static void main(String[] args ) throws Exception
     {
-    	String username = args[0];
+    	String username = "wai";
     	String password = "hatrung";
     	
 //    	Adventure adv = new Adventure();
