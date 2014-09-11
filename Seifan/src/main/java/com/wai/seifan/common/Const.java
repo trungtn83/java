@@ -60,10 +60,11 @@ public interface Const {
 		,new UserInfo("41", "you make me cry", "hatrung")
 		,new UserInfo("78", "marry", "hatrung")
 		,new UserInfo("107", "hit", "hatrung")
-//		,new UserInfo("48", "wai", "hatrung")
+		,new UserInfo("48", "wai", "hatrung")
 		,new UserInfo("83", "thanhha0409", "hatrung")
-		,new UserInfo("137", "moingaymotniemvui", "hatrung")
+		,new UserInfo("137", "moingaymotniemvui", "654321")
 		,new UserInfo("103", "lina", "magician")
+		,new UserInfo("103", "25 Minutes", "654321")
 	};
     
     long MANA_SMALL_QUALITY = 50;
