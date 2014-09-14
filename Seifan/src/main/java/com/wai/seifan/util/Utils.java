@@ -28,7 +28,7 @@ public class Utils implements Url {
 		QuestInfo quest = new QuestInfo();
 		
 		Document document = Jsoup.parse(response.getResponseBody());
-		Element mainDiv = document.getElementById("sectionHeader").nextElementSibling();
+		Element mainDiv = document.getElementById("content_page");
 		
 		// lay thong tin ve so tang
 		for (String no : StringUtils.split(mainDiv.select("div.mapTitle > span").first().text())) {
@@ -38,23 +38,23 @@ public class Utils implements Url {
 			}
 		}
 		// lay diem danh vong
-		Long reputationPoint = Long.parseLong(mainDiv.select("> span").get(2).text());
+		Long reputationPoint = Long.parseLong(mainDiv.select("span").get(3).text());
 		quest.setReputationPoint(reputationPoint);
 		
 		// lay diem phan tram hoan thanh
-		Elements spans = mainDiv.select("> table").get(0).select("> tbody > tr > td > div > span > span");
-		Long completePercent = Long.parseLong(StringUtils.split(spans.get(0).text(), "%")[0]);
+		Elements spans = mainDiv.select("div > table").get(0).select("> tbody > tr > td > div > span");
+		Long completePercent = Long.parseLong(StringUtils.split(spans.get(1).text(), "%")[0]);
 		quest.setCompletePercent(completePercent);
 
 		// lay diem mana cost va exp gain
-		spans = mainDiv.select("> div").get((completePercent == 100L) ? 6 : 3).select("> span");
+		spans = mainDiv.select("> div > div").get((completePercent == 100L) ? 6 : 3).select("> span");
 		Long manaCost = Long.parseLong(spans.get(1).text())*(-1);
 		Long expGain = Long.parseLong(spans.get(3).text());
 		quest.setManaCost(manaCost);
 		quest.setExpGain(expGain);
 		
 		// lay thong tin ca nhan con lai
-		spans = mainDiv.select("> table").get(1).select("> tbody > tr > td > div > span");
+		spans = mainDiv.select("div > table").get(1).select("> tbody > tr > td > div > span");
 		String[] manas = StringUtils.split(spans.get(1).text(), "/");
 		String[] exps = StringUtils.split(spans.get(4).text(), "/");
 		Long manaHave = Long.parseLong(manas[0]);

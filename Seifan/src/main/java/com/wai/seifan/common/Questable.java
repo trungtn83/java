@@ -117,6 +117,7 @@ public abstract class Questable implements Url {
 	}
 	
 	protected void autoAddMana() throws Exception {
+		logger.info("Het mana, dang tu dong phuc hoi ");
 		for (UserInfo friend : Const.FRIENDS) {
 			if (StringUtils.equals(this.user.getUsername(), friend.getUsername()) || StringUtils.equals(this.user.getId(), friend.getId())) continue;
 			Response userDetailResponse = this.getResponse(URL_USER_DETAIL + friend.getId());
